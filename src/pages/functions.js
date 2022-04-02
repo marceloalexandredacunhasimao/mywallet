@@ -14,7 +14,7 @@ function totalPrice(expenses) {
   return `${Math.trunc(soma * 100) / 100}`;
 }
 
-function tabela(expenses) {
+function tabela(expenses, deleteItem, formEditItem) {
   return (
     <table style={ { width: '100%' } }>
       <thead>
@@ -32,7 +32,7 @@ function tabela(expenses) {
       </thead>
       <tbody>
         {
-          expenses.map((ezz) => {
+          expenses.map((ezz, index) => {
             const valor = parseFloat(ezz.value).toFixed(2);
             const moeda = ezz.exchangeRates[ezz.currency].name;
             const cambio = parseFloat(ezz.exchangeRates[ezz.currency].ask);
@@ -48,8 +48,20 @@ function tabela(expenses) {
                 <td>{ convertido.toFixed(2) }</td>
                 <td>Real</td>
                 <td>
-                  <button type="button">Editar</button>
-                  <button type="button">Excluir</button>
+                  <button
+                    data-testid="edit-btn"
+                    type="button"
+                    onClick={ () => formEditItem(index) }
+                  >
+                    Editar
+                  </button>
+                  <button
+                    data-testid="delete-btn"
+                    type="button"
+                    onClick={ () => deleteItem(index) }
+                  >
+                    Excluir
+                  </button>
                 </td>
               </tr>
             );

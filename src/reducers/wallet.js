@@ -1,10 +1,10 @@
 // Esse reducer será responsável por tratar o todas as informações relacionadas as despesas
-// Esse reducer será responsável por tratar as informações da pessoa usuária
-import { REQUEST_DATA, GET_CURRENCIES, ADD_EXPENSE, FAILED_REQUEST } from '../actions';
+import {
+  REQUEST_DATA, GET_CURRENCIES, ADD_EXPENSE, FAILED_REQUEST, DELETE_ITEM, EDIT_ITEM,
+} from '../actions';
 
 const INITIAL_STATE_WALLET = {
   id: 0,
-  //  soma: '0',
   currencies: [],
   expenses: [],
   isFetching: false,
@@ -22,12 +22,6 @@ function wallet(state = INITIAL_STATE_WALLET, action) {
     break;
   case ADD_EXPENSE: {
     const expense = { id: state.id, ...action.payload };
-    /*
-    const ask = parseFloat(expense.exchangeRates[expense.currency].ask);
-    //    newState.soma = (parseFloat(newState.soma) + ask * parseFloat(expense.value)).toFixed(2);
-    //    newState.soma = parseFloat(newState.soma) + ask * parseFloat(expense.value) + '';
-    newState.soma = parseFloat(newState.soma) + ask * parseFloat(expense.value);
-    newState.soma = `${Math.trunc(newState.soma * 100) / 100}`; */
     newState.id += 1;
     newState.expenses = [...newState.expenses, expense];
     break;
@@ -35,6 +29,21 @@ function wallet(state = INITIAL_STATE_WALLET, action) {
   case FAILED_REQUEST:
     newState.error = action.payload;
     break;
+  case DELETE_ITEM: {
+    const newArray = [...newState.expenses];
+    newArray.splice(action.payload, 1);
+    newState.expenses = newArray;
+    break;
+  }
+  case EDIT_ITEM: {
+    const newArray = [...newState.expenses];
+    const { value, description, currency, method, tag, editIndex } = action.payload;
+    let editValue = newArray[editIndex];
+    editValue = { ...editValue, value, description, currency, method, tag };
+    newArray[editIndex] = editValue;
+    newState.expenses = newArray;
+    break;
+  }
   default: return state;
   }
   return newState;

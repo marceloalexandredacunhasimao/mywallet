@@ -1,44 +1,9 @@
-/*
-5. Desenvolva um formulário para adicionar uma despesa contendo as seguintes características:
-
-    Um campo para adicionar valor da despesa.
-        Adicione o atributo data-testid="value-input".
-
-    Um campo para adicionar a descrição da despesa.
-        Adicione o atributo data-testid="description-input".
-
-    Um campo para selecionar em qual moeda será registrada a despesa.
-
-        O campo deve ter a label Moeda.
-
-        As options devem ser preenchidas pelo valor da chave currencies do estado global, implementada no requisito anterior.
-
-        O campo deve ser um <select>.
-
-    Um campo para adicionar qual método de pagamento será utilizado.
-
-        Adicione o atributo data-testid="method-input".
-
-        Este campo deve ser um <select>. A pessoa usuária deve poder escolher entre os campos: 'Dinheiro', 'Cartão de crédito' e 'Cartão de débito'.
-
-    Um campo para selecionar uma categoria (tag) para a despesa.
-
-        Este campo deve ser um dropdown. a pessoa usuária deve poder escolher entre os campos: 'Alimentação', 'Lazer', 'Trabalho', 'Transporte' e 'Saúde'.
-
-        O campo deve ser um <select>.
-
-O que será verificado:
-
-    Um campo para adicionar o valor da despesa
-    Um campo para adicionar a descrição da despesa
-    Um campo para selecionar em qual moeda será registrada a despesa
-    Um campo para selecionar qual método de pagamento será utilizado
-    Um campo para selecionar uma categoria (tag) para a despesa
-*/
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { actionFetchCurrencies, actionFetchExpanse } from '../actions';
+import {
+  actionFetchCurrencies, actionFetchExpanse, actionDeleteItem, actionEditItem,
+} from '../actions';
 import { totalPrice, tabela } from './functions';
 
 class Wallet extends React.Component {
@@ -50,10 +15,12 @@ class Wallet extends React.Component {
       currency: '',
       method: '',
       tag: '',
+      editIndex: -1,
     };
     this.handleChange = this.handleChange.bind(this);
     this.addExpanse = this.addExpanse.bind(this);
-    //    this.totalPrice = this.totalPrice.bind(this);
+    this.formEditItem = this.formEditItem.bind(this);
+    this.btnEditItem = this.btnEditItem.bind(this);
   }
 
   componentDidMount() {
@@ -63,8 +30,33 @@ class Wallet extends React.Component {
 
   addExpanse() {
     const { newExpanse } = this.props;
-    newExpanse(this.state);
+    const { value, description, currency, method, tag } = this.state;
+    newExpanse({ value, description, currency, method, tag });
     this.setState({ value: '' });
+  }
+
+  formEditItem(index) {
+    const {
+      reduxState: {
+        wallet: {
+          expenses,
+        },
+      },
+    } = this.props;
+    const {
+      value,
+      description,
+      currency,
+      method,
+      tag,
+    } = expenses[index];
+    this.setState({ value, description, currency, method, tag, editIndex: index });
+  }
+
+  btnEditItem() {
+    const { editItem } = this.props;
+    editItem(this.state);
+    this.setState({ value: '', editIndex: -1 });
   }
 
   handleChange({ target }) {
@@ -80,14 +72,21 @@ class Wallet extends React.Component {
       reduxState: {
         user: { email },
         wallet: {
-          // soma,
           currencies,
           expenses,
         },
       },
+      deleteItem,
     } = this.props;
 
-    const { value, currency, method, tag } = this.state;
+    const { value, description, currency, method, tag, editIndex } = this.state;
+
+    let btnFunc = this.addExpanse;
+    let btnText = 'Adicionar despesa';
+    if (editIndex >= 0) {
+      btnFunc = this.btnEditItem;
+      btnText = 'Editar despesa';
+    }
 
     return (
       <>
@@ -119,11 +118,13 @@ class Wallet extends React.Component {
             data-testid="description-input"
             type="text"
             name="description"
+            value={ description }
             onChange={ this.handleChange }
           />
           <label htmlFor="currency">
             {'Moeda: '}
             <select
+              data-testid="currency-input"
               name="currency"
               id="currency"
               value={ currency }
@@ -164,9 +165,9 @@ class Wallet extends React.Component {
             <option value="Saúde">Saúde</option>
           </select>
           <br />
-          <button type="button" onClick={ this.addExpanse }>Adicionar despesa</button>
+          <button type="button" onClick={ btnFunc }>{ btnText }</button>
         </div>
-        { tabela(expenses) }
+        { tabela(expenses, deleteItem, this.formEditItem) }
       </>
     );
   }
@@ -177,6 +178,8 @@ const mapStateToProps = (state) => ({ reduxState: state });
 const mapDispatchToProps = (dispatch) => ({
   getCurrencies: () => dispatch(actionFetchCurrencies()),
   newExpanse: (forms) => dispatch(actionFetchExpanse(forms)),
+  deleteItem: (index) => dispatch(actionDeleteItem(index)),
+  editItem: (data) => dispatch(actionEditItem(data)),
 });
 
 Wallet.propTypes = {
@@ -186,12 +189,14 @@ Wallet.propTypes = {
     }),
     wallet: PropTypes.shape({
       soma: PropTypes.string,
-      currencies: PropTypes.arrayOf(PropTypes.string), // (PropTypes.object),
+      currencies: PropTypes.arrayOf(PropTypes.string),
       expenses: PropTypes.arrayOf(PropTypes.object),
     }),
   }).isRequired,
   getCurrencies: PropTypes.func.isRequired,
   newExpanse: PropTypes.func.isRequired,
+  deleteItem: PropTypes.func.isRequired,
+  editItem: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet);
