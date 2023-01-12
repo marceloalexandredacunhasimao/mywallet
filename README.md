@@ -14,9 +14,13 @@ Faça o clone do projeto:
 
     git clone https://github.com/marceloalexandredacunhasimao/mywallet
 
-Inicialize a execução do projeto:
+Instale as dependências
 
     cd mywallet
+    npm install
+
+Inicialize a execução do projeto:
+
     npm start
 
 O funcionamento do projeto pode ser verificado inserindo o endereço http://127.0.0.1:3000 na barra de endereços do navegador.
