@@ -16,4 +16,33 @@ header {
   background-color: green;
   display: flex;
   justify-content: space-around;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+
+#cadastrar-despesa {
+  background-color: lightgreen;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+table {
+  background-color: darkgreen;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: lime;
+}
+
+table tbody tr:nth-child(odd) {
+  background-color: greenyellow;
+}
+
+#e-mail, #senha, #entrar {
+  margin: 3px;
+}
+
+form {
+  margin: auto;
+  width: 240px;
 }
