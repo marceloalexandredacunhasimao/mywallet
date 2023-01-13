@@ -13,25 +13,30 @@ code {
 }
 
 header {
-  background-color: green;
+  background-color: rgb(107, 133, 210);
   display: flex;
+  font-weight: bold;
   justify-content: space-around;
-  padding-bottom: 5px;
-  padding-top: 5px;
+  padding-bottom: 10px;
+  padding-top: 10px;
 }
 
 #cadastrar-despesa {
-  background-color: lightgreen;
-  padding-bottom: 10px;
-  padding-top: 10px;
+  background-color: rgb(137, 163, 255);
+  padding-bottom: 20px;
+  padding-top: 20px;
 }
 
 table {
   background-color: darkgreen;
 }
 
-table tbody tr:nth-child(even) {
+table thead {
   background-color: lime;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: lightgreen;
 }
 
 table tbody tr:nth-child(odd) {
@@ -43,6 +48,11 @@ table tbody tr:nth-child(odd) {
 }
 
 form {
+  font-size: large;
   margin: auto;
   width: 240px;
+}
+
+form input {
+  font-size: large;
 }

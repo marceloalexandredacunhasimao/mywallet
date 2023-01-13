@@ -25,4 +25,4 @@ Inicialize a execução do projeto:
 
 O funcionamento do projeto pode ser verificado inserindo o endereço http://127.0.0.1:3000 na barra de endereços do navegador.
 
-Nota: a tela de login não está totalmente implementada, qualquer e-mail e senha que for digitado dá acesso à aplicação.
+Nota: a tela de login não está totalmente implementada, qualquer e-mail e senha com mais de 5 caracteres que for digitado dá acesso à aplicação.
